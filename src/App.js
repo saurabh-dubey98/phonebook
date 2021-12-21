@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { useContext, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import GlobalStyles from "./GlobalStyles";
+import { Container, SignoutButton } from './components';
+import { SignIn, SignUp, Phonebook } from './pages';
+import { AuthContext } from './context/AuthContext';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { userUID } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userUID) {
+      console.log(userUID);
+      navigate('/')
+    } else {
+      navigate('/signin');
+    }
+  }, [userUID]);
+
+  return <>
+    <GlobalStyles />
+    <Container>
+      <h1>PhoneBook</h1>
+      {userUID && <SignoutButton />}
+      <Routes>
+        <Route path="/" element={<Phonebook />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+    </Container>
+  </>;
 }
 
 export default App;
